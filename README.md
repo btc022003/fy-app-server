@@ -6,7 +6,7 @@
 
 ```bash
 # 需要下载postgresql数据库
-
+# 创建数据库fy-house-app
 npm i
 npx prisma db push
 npx prisma db seed
