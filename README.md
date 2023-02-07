@@ -10,7 +10,7 @@
 npm i
 npx prisma db push
 npx prisma db seed
-npm run dev # 启动之后，在3000端口访问
+npm run start:dev # 启动之后，在3000端口访问
 ```
 
 [接口文档地址](http://localhost:3000)
