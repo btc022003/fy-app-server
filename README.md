@@ -13,4 +13,4 @@ npx prisma db seed
 npm run start:dev # 启动之后，在3000端口访问
 ```
 
-[接口文档地址](http://localhost:3000)
+[接口文档地址](http://localhost:3000/docs)
