@@ -1,0 +1,399 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 房屋类型
+enum HoueCategory {
+  ZhengZu
+  HeZu
+}
+
+// 会员
+model User {
+  id            String  @id @default(uuid())
+  userName      String  @unique @map("user_name") // 用户名就是手机号
+  password      String  @default("fy001")
+  // mobile        String  @default("")
+  realName      String  @default("") @map("real_name")
+  idNum         String  @default("") @map("id_num") // 身份证号
+  isRealChecked Boolean @default(false) @map("is_real_checked") // 是否实名认证
+  avatar        String  @default("")
+  nickName      String  @default("") @map("nick_name")
+
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  roomContracts RoomContract[]
+  roomRepairs   RoomRepair[]
+  complains     Complain[]
+  messages      message[]
+  DateRoom      DateRoom[]
+
+  @@map("users")
+}
+
+// 房东
+model LandLord {
+  id            String  @id @default(uuid())
+  userName      String  @unique @map("user_name")
+  password      String  @default("hdf001")
+  avatar        String  @default("")
+  nickName      String  @default("") @map("nick_name")
+  realName      String  @default("") @map("real_name")
+  idNum         String  @default("") @map("id_num") // 身份证号
+  isRealChecked Boolean @default(false) @map("is_real_checked") // 是否实名认证
+  isChecked     Boolean @default(false) @map("is_checked") // 是否审核通过,审核通过的才能进行房屋出租
+
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  houses        House[]
+  roomContracts RoomContract[]
+  message       message[]
+
+  @@map("land_lords")
+}
+
+// 验证码
+model Captcha {
+  id      String @id @default(uuid())
+  mobile  String
+  code    String
+  purpose String @default("") // 做什么用的login/reg
+  remarks String @default("")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("captcha")
+}
+
+// 房屋信息
+model House {
+  id String @id @default(uuid())
+
+  landLord LandLord? @relation(fields: [landLordId], references: [id])
+
+  region    String  @default("") // 省市区县信息
+  street    String  @default("") // 街道
+  community String  @default("") // 社区
+  dwelling  String  @default("") // 小区名字
+  address   String  @default("") // 详细地址
+  offline   Boolean @default(false) // 是否下线
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  landLordId String? @map("land_load_id")
+  rooms      Room[]
+
+  // 是否整租
+  isWhole Boolean @default(true)
+
+  @@map("houses")
+}
+
+// 房间信息
+model Room {
+  id String @id @default(uuid())
+
+  house   House?  @relation(fields: [houseId], references: [id])
+  price   Float   @default(0)
+  images  String  @default("") // 照片
+  content String  @default("") // 详细信息介绍，可以用富文本
+  isFull  Boolean @default(false) @map("is_full") // 是否已经被租住
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  houseId             String?              @map("house_id")
+  roomAndDevices      RoomAndDevice[]
+  roomContracts       RoomContract[]
+  roomGasLogs         RoomGasLog[]
+  roomElectricityLogs RoomElectricityLog[]
+  roomWaterLogs       RoomWaterLog[]
+  roomRepairs         RoomRepair[]
+  dateRooms           DateRoom[]
+
+  @@map("rooms")
+}
+
+// 房屋设施关联
+model RoomAndDevice {
+  id           String      @id @default(uuid())
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+  room         Room?       @relation(fields: [roomId], references: [id])
+  roomId       String?     @map("room_id")
+  device       RoomDevice? @relation(fields: [roomDeviceId], references: [id])
+  roomDeviceId String?     @map("room_device_id")
+
+  @@map("room_and_devices")
+}
+
+// 房屋设施
+model RoomDevice {
+  id             String          @id @default(uuid())
+  name           String          @default("") // 名字
+  image          String          @default("") // 图标
+  desc           String          @default("") // 简介
+  remarks        String          @default("") // 备注
+  isDel          Boolean         @default(false) // 是否删除
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  roomAndDevices RoomAndDevice[]
+
+  @@map("room_devices")
+}
+
+// 水费记录
+model RoomWaterLog {
+  id        String   @id @default(uuid())
+  value     Float    @default(0)
+  remarks   String   @default("")
+  room      Room?    @relation(fields: [roomId], references: [id])
+  logDate   DateTime @default(now()) @map("log_date")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  roomId    String?  @map("romm_id")
+
+  @@map("room_water_logs")
+}
+
+// 电费记录
+model RoomElectricityLog {
+  id        String   @id @default(uuid())
+  value     Float    @default(0)
+  remarks   String   @default("")
+  room      Room?    @relation(fields: [roomId], references: [id])
+  logDate   DateTime @default(now()) @map("log_date")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  roomId    String?  @map("room_id")
+
+  @@map("room_electricity_logs")
+}
+
+// 燃气记录
+model RoomGasLog {
+  id        String   @id @default(uuid())
+  value     Float    @default(0)
+  remarks   String   @default("")
+  room      Room?    @relation(fields: [roomId], references: [id])
+  logDate   DateTime @default(now()) @map("log_date")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  roomId    String?  @map("room_id")
+
+  @@map("room_gas_logs")
+}
+
+// 合同
+model RoomContract {
+  id          String    @id @default(uuid())
+  room        Room?     @relation(fields: [roomId], references: [id])
+  user        User?     @relation(fields: [userId], references: [id])
+  landLord    LandLord? @relation(fields: [landLordId], references: [id])
+  startTime   DateTime
+  endTime     DateTime
+  payCategory Int       @default(1) // 支付方式 1: 押一付三
+  price       Float // 月租金
+  remarks     String    @default("")
+
+  isChecked Boolean @default(false) // 是否已经确认签订
+
+  logDate            DateTime            @default(now()) @map("log_date") // 签订日期
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  roomId             String?             @map("room_id")
+  userId             String?             @map("user_id")
+  landLordId         String?             @map("land_lord_id")
+  roomContractOrders RoomContractOrder[]
+  roomRepairs        RoomRepair[]
+  complains          Complain[]
+
+  @@map("room_contracts")
+}
+
+// 合同支付记录，根据合同自动生成需要支付的金额，按月自动生成 类似支付宝或者银行中的分期记录
+model RoomContractOrder {
+  id          String   @id @default(uuid())
+  price       Float
+  isPayed     Boolean  @default(false)
+  payCatefory Int      @default(1) // 1. 支付宝 2. 微信 3. 银行卡 4. 现金
+  payDate     DateTime // 实际支付时间
+  lastPayDate DateTime // 最后支付时间 需要根据合同自动生成
+  remarks     String   @default("")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  roomContract   RoomContract? @relation(fields: [roomContractId], references: [id])
+  roomContractId String?       @map("room_contract_id")
+
+  @@map("room_contract_orders")
+}
+
+// 报修
+model RoomRepair {
+  id             String        @id @default(uuid())
+  user           User?         @relation(fields: [userId], references: [id])
+  room           Room?         @relation(fields: [roomId], references: [id])
+  roomContract   RoomContract? @relation(fields: [roomContractId], references: [id])
+  askImage       String?       @default("") // 报修照片
+  remarks        String?
+  isReplyed      Boolean       @default(false) //
+  replyContent   String?
+  replyImage     String?       @default("") // 修复之后反馈的照片
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  userId         String?       @map("user_id")
+  roomId         String?       @map("room_id")
+  roomContractId String?       @map("room_contract_id")
+
+  @@map("room_repairs")
+}
+
+// 预约看房
+model DateRoom {
+  id String @id @default(uuid())
+
+  user     User?     @relation(fields: [userId], references: [id])
+  room     Room?     @relation(fields: [roomId], references: [id])
+  dateTime DateTime? @map("date_time") // 预约的时间
+  remarks  String?   @default("") // 备注信息
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    String?  @map("user_id")
+  roomId    String?  @map("room_id")
+
+  @@map("date_rooms")
+}
+
+// 投诉
+model Complain {
+  id             String        @id @default(uuid())
+  user           User?         @relation(fields: [userId], references: [id])
+  contract       RoomContract? @relation(fields: [roomContractId], references: [id])
+  askImage       String?       @default("") // 报修照片
+  remarks        String?
+  isReplyed      Boolean       @default(false) //
+  replyContent   String?
+  replyImage     String?       @default("") // 修复之后反馈的照片
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  userId         String?       @map("user_id")
+  roomContractId String?
+
+  @@map("complains")
+}
+
+// 聊天记录
+model message {
+  id String @id @default(uuid())
+
+  user     User?     @relation(fields: [userId], references: [id])
+  landLord LandLord? @relation(fields: [landLordId], references: [id])
+
+  isFromUser Boolean @default(true) // 是否用户发的消息
+  content    String
+
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  userId     String?  @map("user_id")
+  landLordId String?  @map("land_lord_id")
+
+  @@map("messages")
+}
+
+// 公告
+model notice {
+  id      String  @id @default(uuid())
+  title   String
+  image   String? @default("")
+  desc    String? @default("")
+  content String? @default("")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("notices")
+}
+
+// 系统日志
+model SystemLog {
+  id      String @id @default(uuid())
+  content String
+  remarks String @default("")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("system_logs")
+}
+
+// 管理员
+model Manager {
+  id        String   @id @default(uuid())
+  userName  String   @unique @map("user_name")
+  password  String
+  avatar    String   @default("")
+  nickName  String   @default("") @map("nick_name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  role   Role?   @relation(fields: [roleId], references: [id])
+  roleId String? @map("role_id")
+
+  @@map("managers")
+}
+
+// 角色
+model Role {
+  id                String               @id @default(uuid())
+  name              String               @unique
+  desc              String               @default("")
+  permissionOnRoles PermissionsOnRoles[]
+
+  managers  Manager[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("roles")
+}
+
+// 权限
+model Permission {
+  id   String @id @default(uuid())
+  name String
+  desc String @default("")
+
+  parent Permission? @relation("PermissionToPermission", fields: [permissionId], references: [id])
+
+  permissionOnRoles PermissionsOnRoles[]
+
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  permissionId String?      @map("permission_id")
+  permission   Permission[] @relation("PermissionToPermission")
+
+  @@map("permissions")
+}
+
+model PermissionsOnRoles {
+  id           String      @id @default(uuid())
+  role         Role?       @relation(fields: [roleId], references: [id])
+  roleId       String?     @map("role_id")
+  permission   Permission? @relation(fields: [permissionId], references: [id])
+  permissionId String?     @map("permission_id")
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  @@map("permissions_on_roles")
+}
