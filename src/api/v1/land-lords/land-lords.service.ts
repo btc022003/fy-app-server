@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { beforeTwoWeeks } from 'src/utils/tools';
-import { CreateHouseDto, CreateHouseRoomDto } from './dto/create-land-lord.dto';
+import {
+  createContract,
+  CreateHouseDto,
+  CreateHouseRoomDto,
+} from './dto/create-land-lord.dto';
 import { encodePwd, validateCaptchaIsOutDated } from 'src/utils/tools';
 
 @Injectable()
@@ -125,8 +129,20 @@ export class LandLordsService {
     return '删除房间信息成功';
   }
 
-  findAll() {
-    return `This action returns all landLords`;
+  /**
+   * 获取房源信息
+   * @param id
+   * @returns
+   */
+  findAll(id: string) {
+    return this.prisma.house.findMany({
+      where: {
+        landLordId: id,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 
   /**
@@ -241,7 +257,7 @@ export class LandLordsService {
     const needPayedContract = await this.prisma.roomContractOrder.findMany({
       where: {
         lastPayDate: {
-          lte: beforeTwoWeeks().toString(),
+          lte: beforeTwoWeeks().toDate(),
         },
         isPayed: false,
       },
@@ -281,7 +297,7 @@ export class LandLordsService {
    */
   async houses(
     landLordId: string,
-    isWhole: boolean,
+    isWhole: boolean = null,
     minPrice = -1,
     maxPrice = -1,
     area = '',
@@ -298,12 +314,18 @@ export class LandLordsService {
       priceClause.get = minPrice;
       priceClause.lte = maxPrice;
     }
+    const where: any = {
+      landLordId: landLordId,
+      offline: false,
+    };
+    if (isWhole != null) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      where.isWhole = { equals: isWhole == 'true' ? true : false };
+    }
     const houses = await this.prisma.house.findMany({
-      where: {
-        isWhole,
-        landLordId: landLordId,
-        offline: false,
-      },
+      where,
+
       include: {
         rooms: {
           where: priceClause,
@@ -420,5 +442,64 @@ export class LandLordsService {
       },
     });
     return '实名信息修改成功';
+  }
+
+  /**
+   * 生成租房合同
+   * @param data
+   */
+  async createContract(
+    landLordId: string,
+    userMobile: string,
+    data: createContract,
+  ) {
+    const room = await this.prisma.room.findFirst({
+      where: {
+        id: data.roomId,
+      },
+      include: {
+        house: true,
+      },
+    });
+    // 已经租住的房子不能重复签订合同
+    if (room.isFull) {
+      return {
+        success: false,
+        errorMessage: '已经租住的房子不能重复签订合同',
+      };
+    }
+    const user = await this.prisma.user.findFirst({
+      where: {
+        userName: userMobile,
+      },
+    });
+    if (user) {
+      await this.prisma.roomContract.create({
+        data: {
+          ...data,
+          landLordId,
+          userId: user.id,
+          startTime: new Date(data.startTime),
+          endTime: new Date(data.endTime),
+        },
+      });
+      await this.prisma.room.update({
+        where: {
+          id: data.roomId,
+        },
+        data: {
+          isFull: true,
+        },
+      });
+      return {
+        success: true,
+        errorMessage: '合同签订成功',
+      };
+    } else {
+      return {
+        success: false,
+        errorMessage: '用户手机号码不存在，请先注册',
+      };
+    }
   }
 }

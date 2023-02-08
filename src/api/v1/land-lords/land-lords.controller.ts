@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { LandLordsService } from './land-lords.service';
 import {
+  createContract,
   CreateHouseDto,
   CreateHouseRoomDto,
   HouseQuery,
@@ -25,7 +26,7 @@ import {
 } from '../members/dto/create-member.dto';
 
 @ApiTags('房东部分')
-@Controller('/api/v1/land-lords')
+@Controller('/api/v1/land_lords')
 export class LandLordsController {
   constructor(private readonly landLordsService: LandLordsService) {}
 
@@ -81,6 +82,7 @@ export class LandLordsController {
   @Get('home')
   findAll(@Req() req) {
     // 房东首页数据
+    // console.log(req.user.id);
     return this.landLordsService.homeInfo(req.user.id);
   }
 
@@ -152,5 +154,15 @@ export class LandLordsController {
       idNum.idNum,
       idNum.realName,
     );
+  }
+
+  @ApiOperation({
+    summary: '生成合同',
+  })
+  @Post('init_contract')
+  initContract(@Req() req, @Body() contract: createContract) {
+    const { userMobile, ...data } = contract;
+
+    return this.landLordsService.createContract(req.user.id, userMobile, data);
   }
 }

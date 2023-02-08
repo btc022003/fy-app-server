@@ -30,6 +30,8 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(ValidateLoginMiddleware)
-      .forRoutes(...['/api/v1/admin/*', '/api/v1/members/*']); // 使用中间件
+      .forRoutes(
+        ...['/api/v1/admin/*', '/api/v1/members/*', '/api/v1/land_lords/*'],
+      ); // 使用中间件
   }
 }
