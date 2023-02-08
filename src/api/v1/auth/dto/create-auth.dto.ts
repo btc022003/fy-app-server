@@ -16,11 +16,11 @@ export class LoginDto {
   })
   pwd: string;
 
-  @ApiProperty({
-    description: '登陆方式,0或者1;0表示验证码登陆,1表示密码登陆',
-    default: '',
-  })
-  type: number;
+  // @ApiProperty({
+  //   description: '登陆方式,0或者1;0表示验证码登陆,1表示密码登陆',
+  //   default: '',
+  // })
+  // type: number;
 }
 
 export class RegDto {
@@ -33,7 +33,7 @@ export class RegDto {
   })
   userName: string;
   @ApiProperty({
-    description: '密码或者验证码',
+    description: '验证码',
     default: '',
   })
   pwd: string;

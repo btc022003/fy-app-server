@@ -17,9 +17,15 @@ import {
   HouseQuery,
 } from './dto/create-land-lord.dto';
 // import { UpdateLandLordDto } from './dto/update-land-lord.dto';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ResetPassword,
+  SetPassword,
+  UpdateMemberIdNum,
+} from '../members/dto/create-member.dto';
 
-@Controller('land-lords')
+@ApiTags('房东部分')
+@Controller('/api/v1/land-lords')
 export class LandLordsController {
   constructor(private readonly landLordsService: LandLordsService) {}
 
@@ -114,5 +120,37 @@ export class LandLordsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.landLordsService.remove(id);
+  }
+
+  @ApiOperation({
+    summary: '房东设置密码',
+  })
+  @Put('ll_set_pwd')
+  async landLordSetPwd(@Req() req, @Body() setPwd: SetPassword) {
+    await this.landLordsService.landLordSetPwd(req.user.id, setPwd.password);
+  }
+
+  @ApiOperation({
+    summary: '房东重置密码',
+  })
+  @Put('ll_reset_pwd')
+  landLordResetPwd(@Req() req, @Body() resetPwd: ResetPassword) {
+    return this.landLordsService.landLordResetPwd(
+      req.user.id,
+      resetPwd.password,
+      resetPwd.code,
+    );
+  }
+
+  @ApiOperation({
+    summary: '房东实名认证',
+  })
+  @Put('ll_set_id_num')
+  landLordSetUserIdNum(@Req() req, @Body() idNum: UpdateMemberIdNum) {
+    return this.landLordsService.landLordSetIdNum(
+      req.user.id,
+      idNum.idNum,
+      idNum.realName,
+    );
   }
 }

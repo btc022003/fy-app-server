@@ -21,7 +21,8 @@ export class AuthController {
     const data = await this.usersService.userLogin(
       body.userName,
       body.pwd,
-      body.type === 1 ? 'captcha' : 'pwd',
+      // body.type === 1 ? 'captcha' : 'pwd',
+      'captcha',
     );
     // 写用户id到cookie中，调用接口的时候直接传递cookie就好
     data.success
@@ -60,7 +61,8 @@ export class AuthController {
     const data = await this.usersService.landLordLogin(
       body.userName,
       body.pwd,
-      body.type === 1 ? 'captcha' : 'pwd',
+      // body.type === 1 ? 'captcha' : 'pwd',
+      'captcha',
     );
     // 写用户id到cookie中，调用接口的时候直接传递cookie就好
     data.success
@@ -76,7 +78,7 @@ export class AuthController {
   @ApiOperation({
     summary: '房东注册',
   })
-  @Post('ff_reg')
+  @Post('ll_reg')
   async llReg(
     @Body() body: RegDto,
     @Res({ passthrough: true })

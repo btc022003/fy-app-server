@@ -9,9 +9,11 @@ import { AuthModule } from './api/v1/auth/auth.module';
 import { MembersModule } from './api/v1/members/members.module';
 import { CommonService } from './api/v1/common/common.service';
 import { LandLordsModule } from './api/v1/land-lords/land-lords.module';
+import { CustomerModule } from './api/v1/customer/customer.module';
+import { SystemModule } from './api/v1/system/system.module';
 
 @Module({
-  imports: [ChatMessageModule, AuthModule, MembersModule, LandLordsModule],
+  imports: [ChatMessageModule, AuthModule, MembersModule, LandLordsModule, CustomerModule, SystemModule],
   controllers: [AppController, CommonController],
   providers: [AppService, PrismaService, CommonService],
 })

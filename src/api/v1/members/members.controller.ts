@@ -5,8 +5,9 @@ import {
   SetPassword,
   UpdateMemberIdNum,
 } from './dto/create-member.dto';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('一般用户会员中心')
 @Controller('/api/v1/members')
 export class MembersController {
   constructor(private readonly membersService: MembersService) {}
@@ -36,38 +37,6 @@ export class MembersController {
   })
   @Put('set_id_num')
   setUserIdNum(@Req() req, @Body() idNum: UpdateMemberIdNum) {
-    return this.membersService.setIdNum(
-      req.user.id,
-      idNum.idNum,
-      idNum.realName,
-    );
-  }
-
-  @ApiOperation({
-    summary: '房东设置密码',
-  })
-  @Put('ll_set_pwd')
-  async landLordSetPwd(@Req() req, @Body() setPwd: SetPassword) {
-    await this.membersService.setPwd(req.user.id, setPwd.password);
-  }
-
-  @ApiOperation({
-    summary: '房东重置密码',
-  })
-  @Put('ll_reset_pwd')
-  landLordResetPwd(@Req() req, @Body() resetPwd: ResetPassword) {
-    return this.membersService.resetPwd(
-      req.user.id,
-      resetPwd.password,
-      resetPwd.code,
-    );
-  }
-
-  @ApiOperation({
-    summary: '房东实名认证',
-  })
-  @Put('ll_set_id_num')
-  landLordSetUserIdNum(@Req() req, @Body() idNum: UpdateMemberIdNum) {
     return this.membersService.setIdNum(
       req.user.id,
       idNum.idNum,
