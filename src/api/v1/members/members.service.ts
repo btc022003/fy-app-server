@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as dayjs from 'dayjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { encodePwd, validateCaptchaIsOutDated } from 'src/utils/tools';
 
@@ -97,5 +98,61 @@ export class MembersService {
       },
     });
     return '实名信息修改成功';
+  }
+
+  async checkContract(userId: string, contractId) {
+    const contract = await this.prisma.roomContract.findFirst({
+      where: {
+        userId,
+        id: contractId,
+      },
+    });
+
+    if (contract) {
+      if (contract.isChecked) {
+        return {
+          success: false,
+          errorMessage: '不能重复确认合同',
+        };
+      }
+      // 租客确认合同
+      await this.prisma.roomContract.update({
+        where: {
+          id: contract.id,
+        },
+        data: {
+          isChecked: true,
+        },
+      });
+
+      // 生成支付订单
+      const orders = [];
+      // console.log(contract.endTime);
+      const months = dayjs(contract.endTime).diff(
+        dayjs(contract.startTime),
+        'month',
+      );
+      for (let i = 0; i < months; i++) {
+        orders.push({
+          price: contract.price,
+          lastPayDate: dayjs(contract.startTime)
+            .add(i + 1, 'month')
+            .toDate(),
+        });
+      }
+
+      await this.prisma.roomContractOrder.createMany({
+        data: orders,
+      });
+      return {
+        success: true,
+        errorMessage: '合同签订成功',
+      };
+    } else {
+      return {
+        success: false,
+        errorMessage: '合同信息不存在',
+      };
+    }
   }
 }

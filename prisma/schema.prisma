@@ -200,9 +200,9 @@ model RoomContract {
   room        Room?     @relation(fields: [roomId], references: [id])
   user        User?     @relation(fields: [userId], references: [id])
   landLord    LandLord? @relation(fields: [landLordId], references: [id])
-  startTime   DateTime
-  endTime     DateTime
-  payCategory Int       @default(1) // 支付方式 1: 押一付三
+  startTime   DateTime  @map("start_time")
+  endTime     DateTime  @map("end_time")
+  payCategory Int       @default(1) @map("pay_category") // 支付方式 1: 押一付三
   price       Float // 月租金
   remarks     String    @default("")
 
@@ -223,15 +223,15 @@ model RoomContract {
 
 // 合同支付记录，根据合同自动生成需要支付的金额，按月自动生成 类似支付宝或者银行中的分期记录
 model RoomContractOrder {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   price       Float
-  isPayed     Boolean  @default(false)
-  payCatefory Int      @default(1) // 1. 支付宝 2. 微信 3. 银行卡 4. 现金
-  payDate     DateTime // 实际支付时间
-  lastPayDate DateTime // 最后支付时间 需要根据合同自动生成
-  remarks     String   @default("")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  isPayed     Boolean   @default(false)
+  payCatefory Int       @default(1) @map("pay_category") // 1. 支付宝 2. 微信 3. 银行卡 4. 现金
+  payDate     DateTime? @map("pay_date") // 实际支付时间
+  lastPayDate DateTime? @map("last_pay_date") // 最后支付时间 需要根据合同自动生成
+  remarks     String    @default("")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   roomContract   RoomContract? @relation(fields: [roomContractId], references: [id])
   roomContractId String?       @map("room_contract_id")
@@ -247,9 +247,9 @@ model RoomRepair {
   roomContract   RoomContract? @relation(fields: [roomContractId], references: [id])
   askImage       String?       @default("") // 报修照片
   remarks        String?
-  isReplyed      Boolean       @default(false) //
-  replyContent   String?
-  replyImage     String?       @default("") // 修复之后反馈的照片
+  isReplyed      Boolean       @default(false) @map("is_replayed") //
+  replyContent   String?       @map("reply_content")
+  replyImage     String?       @default("") @map("reply_image") // 修复之后反馈的照片
   createdAt      DateTime      @default(now()) @map("created_at")
   updatedAt      DateTime      @updatedAt @map("updated_at")
   userId         String?       @map("user_id")

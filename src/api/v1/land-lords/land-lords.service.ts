@@ -483,6 +483,7 @@ export class LandLordsService {
           endTime: new Date(data.endTime),
         },
       });
+      // 修改当前房间状态
       await this.prisma.room.update({
         where: {
           id: data.roomId,
@@ -491,6 +492,7 @@ export class LandLordsService {
           isFull: true,
         },
       });
+
       return {
         success: true,
         errorMessage: '合同签订成功',

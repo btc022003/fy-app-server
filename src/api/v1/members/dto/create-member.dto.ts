@@ -69,3 +69,13 @@ export class UpdateMobile {
   })
   captcha: string;
 }
+
+export class CheckContract {
+  @ApiProperty({
+    description: '合同id',
+  })
+  @IsNotEmpty({
+    message: '合同id不能为空',
+  })
+  contractId: string;
+}

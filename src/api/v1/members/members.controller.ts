@@ -1,11 +1,13 @@
 import { Controller, Body, Put, Req } from '@nestjs/common';
 import { MembersService } from './members.service';
 import {
+  CheckContract,
   ResetPassword,
   SetPassword,
   UpdateMemberIdNum,
 } from './dto/create-member.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Post } from '@nestjs/common/decorators';
 
 @ApiTags('一般用户会员中心')
 @Controller('/api/v1/members')
@@ -41,6 +43,17 @@ export class MembersController {
       req.user.id,
       idNum.idNum,
       idNum.realName,
+    );
+  }
+
+  @ApiOperation({
+    summary: '确认合同',
+  })
+  @Post('check_contract')
+  checkContract(@Req() req, @Body() contractInfo: CheckContract) {
+    return this.membersService.checkContract(
+      req.user.id,
+      contractInfo.contractId,
     );
   }
 }
