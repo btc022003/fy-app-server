@@ -94,7 +94,7 @@ model House {
   rooms      Room[]
 
   // 是否整租
-  isWhole Boolean @default(true)
+  isWhole Boolean @default(true) @map("is_whole")
 
   @@map("houses")
 }
@@ -144,7 +144,7 @@ model RoomDevice {
   image          String          @default("") // 图标
   desc           String          @default("") // 简介
   remarks        String          @default("") // 备注
-  isDel          Boolean         @default(false) // 是否删除
+  isDel          Boolean         @default(false) @map("is_del") // 是否删除
   createdAt      DateTime        @default(now()) @map("created_at")
   updatedAt      DateTime        @updatedAt @map("updated_at")
   roomAndDevices RoomAndDevice[]
@@ -206,7 +206,7 @@ model RoomContract {
   price       Float // 月租金
   remarks     String    @default("")
 
-  isChecked Boolean @default(false) // 是否已经确认签订
+  isChecked Boolean @default(false) @map("is_checked") // 是否已经确认签订
 
   logDate            DateTime            @default(now()) @map("log_date") // 签订日期
   createdAt          DateTime            @default(now()) @map("created_at")
@@ -225,7 +225,7 @@ model RoomContract {
 model RoomContractOrder {
   id          String    @id @default(uuid())
   price       Float
-  isPayed     Boolean   @default(false)
+  isPayed     Boolean   @default(false) @map("is_payed")
   payCatefory Int       @default(1) @map("pay_category") // 1. 支付宝 2. 微信 3. 银行卡 4. 现金
   payDate     DateTime? @map("pay_date") // 实际支付时间
   lastPayDate DateTime? @map("last_pay_date") // 最后支付时间 需要根据合同自动生成
@@ -245,7 +245,7 @@ model RoomRepair {
   user           User?         @relation(fields: [userId], references: [id])
   room           Room?         @relation(fields: [roomId], references: [id])
   roomContract   RoomContract? @relation(fields: [roomContractId], references: [id])
-  askImage       String?       @default("") // 报修照片
+  askImage       String?       @default("") @map("ask_image") // 报修照片
   remarks        String?
   isReplyed      Boolean       @default(false) @map("is_replayed") //
   replyContent   String?       @map("reply_content")
@@ -281,15 +281,15 @@ model Complain {
   id             String        @id @default(uuid())
   user           User?         @relation(fields: [userId], references: [id])
   contract       RoomContract? @relation(fields: [roomContractId], references: [id])
-  askImage       String?       @default("") // 报修照片
+  askImage       String?       @default("") @map("ask_image") // 报修照片
   remarks        String?
-  isReplyed      Boolean       @default(false) //
-  replyContent   String?
-  replyImage     String?       @default("") // 修复之后反馈的照片
+  isReplyed      Boolean       @default(false) @map("is_replyed") //
+  replyContent   String?       @map("reply_content")
+  replyImage     String?       @default("") @map("reply_image") // 修复之后反馈的照片
   createdAt      DateTime      @default(now()) @map("created_at")
   updatedAt      DateTime      @updatedAt @map("updated_at")
   userId         String?       @map("user_id")
-  roomContractId String?
+  roomContractId String?       @map("room_contract_id")
 
   @@map("complains")
 }

@@ -65,7 +65,7 @@ export class AuthService {
         data: {
           // ...user,
           userName: user.userName,
-          password: encodePwd(user.pwd),
+          password: encodePwd('fy001'),
         },
       });
       return {
@@ -233,7 +233,7 @@ export class AuthService {
         data: {
           // ...user,
           userName: user.userName,
-          password: encodePwd(user.pwd),
+          password: encodePwd('fy001'),
         },
       });
       return {
