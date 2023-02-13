@@ -1,15 +1,35 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 @Injectable()
 export class CustomersService {
+  constructor(private prisma: PrismaService) {}
   create(createCustomerDto: CreateCustomerDto) {
     return 'This action adds a new customer';
   }
 
-  findAll() {
-    return `This action returns all customers`;
+  async findAll(where = {}, page = 1, per = 10) {
+    page = isNaN(page) ? 1 : page * 1;
+    per = isNaN(per) ? 10 : per * 1;
+
+    const list = await this.prisma.user.findMany({
+      where,
+      skip: (page - 1) * per,
+      take: per * 1,
+      // include,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    const total = await this.prisma.user.count({ where });
+    return {
+      list,
+      current: page,
+      pageSize: per,
+      total,
+    };
   }
 
   findOne(id: number) {
