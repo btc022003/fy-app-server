@@ -155,4 +155,17 @@ export class MembersService {
       };
     }
   }
+
+  /**
+   * 获取个人信息
+   * @param id
+   * @returns
+   */
+  loadUserInfo(id: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        id,
+      },
+    });
+  }
 }

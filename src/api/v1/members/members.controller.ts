@@ -7,7 +7,7 @@ import {
   UpdateMemberIdNum,
 } from './dto/create-member.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Post } from '@nestjs/common/decorators';
+import { Get, Post } from '@nestjs/common/decorators';
 
 @ApiTags('一般用户会员中心')
 @Controller('/api/v1/members')
@@ -55,5 +55,13 @@ export class MembersController {
       req.user.id,
       contractInfo.contractId,
     );
+  }
+
+  @ApiOperation({
+    summary: '用户信息',
+  })
+  @Get('/info')
+  loadLLInfo(@Req() req) {
+    return this.membersService.loadUserInfo(req.user.id);
   }
 }

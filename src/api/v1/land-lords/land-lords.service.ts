@@ -504,4 +504,17 @@ export class LandLordsService {
       };
     }
   }
+
+  /**
+   * 获取房东的个人信息
+   * @param id
+   * @returns
+   */
+  loadLandLordInfo(id: string) {
+    return this.prisma.landLord.findFirst({
+      where: {
+        id,
+      },
+    });
+  }
 }

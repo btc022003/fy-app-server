@@ -165,4 +165,12 @@ export class LandLordsController {
 
     return this.landLordsService.createContract(req.user.id, userMobile, data);
   }
+
+  @ApiOperation({
+    summary: '用户信息',
+  })
+  @Get('/info')
+  loadLLInfo(@Req() req) {
+    return this.landLordsService.loadLandLordInfo(req.user.id);
+  }
 }
