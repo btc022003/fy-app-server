@@ -13,9 +13,10 @@ import { CustomerModule } from './api/v1/customer/customer.module';
 import { SystemModule } from './api/v1/system/system.module';
 import { RoomDevicesModule } from './api/v1/admin/room-devices/room-devices.module';
 import { ManagersModule } from './api/v1/admin/managers/managers.module';
-import { HouseRoomsModule } from './api/v1/admin/house-rooms/house-rooms.module';
+import { HouseRoomsModule as AdminHouseRoomsModule } from './api/v1/admin/house-rooms/house-rooms.module';
 import { LandLordsModule as AdminLandLordsModule } from './api/v1/admin/land-lords/land-lords.module';
 import { CustomersModule } from './api/v1/admin/customers/customers.module';
+import { HouseRoomsModule } from './api/v1/house-rooms/house-rooms.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CustomersModule } from './api/v1/admin/customers/customers.module';
     HouseRoomsModule,
     CustomersModule,
     AdminLandLordsModule,
+    AdminHouseRoomsModule,
   ],
   controllers: [AppController, CommonController],
   providers: [AppService, PrismaService, CommonService],

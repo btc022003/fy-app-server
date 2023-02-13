@@ -9,7 +9,7 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Get, Post } from '@nestjs/common/decorators';
 
-@ApiTags('一般用户会员中心')
+@ApiTags('客户端-会员中心')
 @Controller('/api/v1/members')
 export class MembersController {
   constructor(private readonly membersService: MembersService) {}
