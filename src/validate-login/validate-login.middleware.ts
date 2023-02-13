@@ -22,7 +22,7 @@ export class ValidateLoginMiddleware implements NestMiddleware {
       validateToken(token, async (validateResult) => {
         if (validateResult.code) {
           const userId = validateResult.data.id;
-          if (req.originalUrl.startsWith('/admin')) {
+          if (req.originalUrl.startsWith('/api/v1/admin')) {
             user = await this.prisma.manager.findUnique({
               where: { id: userId },
             });
