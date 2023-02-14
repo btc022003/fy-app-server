@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { encodePwd, validateCaptchaIsOutDated } from 'src/utils/tools';
+import { DateHouseRoom } from './dto/create-member.dto';
 
 @Injectable()
 export class MembersService {
@@ -167,5 +168,95 @@ export class MembersService {
         id,
       },
     });
+  }
+
+  /**
+   * 预约看房
+   * @param userId
+   * @param roomId
+   * @param dateTime
+   * @param remarks
+   * @returns
+   */
+  dateHouseRoom(dateRoom: DateHouseRoom) {
+    return this.prisma.dateRoom.create({
+      data: {
+        roomId: dateRoom.userId,
+        userId: dateRoom.roomId,
+        dateTime: new Date(dateRoom.dateTime),
+        remarks: dateRoom.remarks,
+      },
+    });
+  }
+
+  /**
+   * 报修信息
+   * @param userId
+   * @param askImage
+   * @param remarks
+   * @param roomContractId
+   * @returns
+   */
+  async repairsOrder(userId, askImage, remarks) {
+    // const roomContractId = '';
+    // 获取用户的最新合同信息
+    const contract = await this.prisma.roomContract.findFirst({
+      where: {
+        userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    if (contract) {
+      return {
+        success: false,
+        errorMessage: '合同信息不存在',
+      };
+    } else {
+      return this.prisma.roomRepair.create({
+        //
+        data: {
+          userId,
+          askImage,
+          remarks,
+          roomContractId: contract.id,
+        },
+      });
+    }
+  }
+
+  /**
+   * 对合同信息进行投诉
+   * @param userId
+   * @param askImage
+   * @param remarks
+   * @returns
+   */
+  async complain(userId, askImage, remarks) {
+    const contract = await this.prisma.roomContract.findFirst({
+      where: {
+        userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    if (contract) {
+      return {
+        success: false,
+        errorMessage: '合同信息不存在',
+      };
+    } else {
+      return this.prisma.complain.create({
+        //
+        data: {
+          userId,
+          askImage,
+          remarks,
+          roomContractId: contract.id,
+        },
+      });
+    }
   }
 }

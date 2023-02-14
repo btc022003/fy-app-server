@@ -12,7 +12,7 @@ import { CreateHouseRoomDto } from './dto/create-house-room.dto';
 import { UpdateHouseRoomDto } from './dto/update-house-room.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@Controller('house-rooms')
+@Controller('/api/v1/house-rooms')
 export class HouseRoomsController {
   constructor(private readonly houseRoomsService: HouseRoomsService) {}
 

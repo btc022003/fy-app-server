@@ -6,9 +6,9 @@ import { UpdateHouseRoomDto } from './dto/update-house-room.dto';
 @Injectable()
 export class HouseRoomsService {
   constructor(private prisma: PrismaService) {}
-  create(createHouseRoomDto: CreateHouseRoomDto) {
-    return 'This action adds a new houseRoom';
-  }
+  // create(createHouseRoomDto: CreateHouseRoomDto) {
+  //   return 'This action adds a new houseRoom';
+  // }
 
   async findAll(where = {}, page = 1, per = 10) {
     page = isNaN(page) ? 1 : page * 1;
@@ -38,15 +38,15 @@ export class HouseRoomsService {
       total,
     };
   }
-  findOne(id: number) {
-    return `This action returns a #${id} houseRoom`;
-  }
+  // findOne(id: number) {
+  //   return `This action returns a #${id} houseRoom`;
+  // }
 
-  update(id: number, updateHouseRoomDto: UpdateHouseRoomDto) {
-    return `This action updates a #${id} houseRoom`;
-  }
+  // update(id: number, updateHouseRoomDto: UpdateHouseRoomDto) {
+  //   return `This action updates a #${id} houseRoom`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} houseRoom`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} houseRoom`;
+  // }
 }

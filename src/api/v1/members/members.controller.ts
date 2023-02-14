@@ -2,7 +2,9 @@ import { Controller, Body, Put, Req } from '@nestjs/common';
 import { MembersService } from './members.service';
 import {
   CheckContract,
+  DateHouseRoom,
   ResetPassword,
+  RoomRepairAskInfo,
   SetPassword,
   UpdateMemberIdNum,
 } from './dto/create-member.dto';
@@ -63,5 +65,38 @@ export class MembersController {
   @Get('/info')
   loadLLInfo(@Req() req) {
     return this.membersService.loadUserInfo(req.user.id);
+  }
+
+  @ApiOperation({
+    summary: '预约看房',
+  })
+  @Post('/date_room')
+  dateHouseRoom(@Req() req, @Body() dateHouseRoom: DateHouseRoom) {
+    dateHouseRoom.userId = req.user.id;
+    return this.membersService.dateHouseRoom(dateHouseRoom);
+  }
+
+  @ApiOperation({
+    summary: '报修',
+  })
+  @Post('/ask_repairs')
+  askRepair(@Req() req, @Body() askInfo: RoomRepairAskInfo) {
+    return this.membersService.repairsOrder(
+      req.user.id,
+      askInfo.askImage,
+      askInfo.remarks,
+    );
+  }
+
+  @ApiOperation({
+    summary: '投诉',
+  })
+  @Post('/ask_complain')
+  askComplain(@Req() req, @Body() askInfo: RoomRepairAskInfo) {
+    return this.membersService.repairsOrder(
+      req.user.id,
+      askInfo.askImage,
+      askInfo.remarks,
+    );
   }
 }

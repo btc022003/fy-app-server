@@ -54,7 +54,11 @@ export class LandLordsService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} landLord`;
+  remove(id: string) {
+    return this.prisma.landLord.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

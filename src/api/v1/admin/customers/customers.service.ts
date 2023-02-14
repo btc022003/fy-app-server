@@ -6,9 +6,9 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 @Injectable()
 export class CustomersService {
   constructor(private prisma: PrismaService) {}
-  create(createCustomerDto: CreateCustomerDto) {
-    return 'This action adds a new customer';
-  }
+  // create(createCustomerDto: CreateCustomerDto) {
+  //   return 'This action adds a new customer';
+  // }
 
   async findAll(where = {}, page = 1, per = 10) {
     page = isNaN(page) ? 1 : page * 1;
@@ -32,15 +32,15 @@ export class CustomersService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
-  }
+  // findOne(id: number) {
+  //   return `This action returns a #${id} customer`;
+  // }
 
-  update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    return `This action updates a #${id} customer`;
-  }
+  // update(id: number, updateCustomerDto: UpdateCustomerDto) {
+  //   return `This action updates a #${id} customer`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} customer`;
+  // }
 }

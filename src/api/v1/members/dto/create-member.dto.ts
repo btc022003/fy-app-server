@@ -79,3 +79,37 @@ export class CheckContract {
   })
   contractId: string;
 }
+
+export class DateHouseRoom {
+  @ApiProperty({
+    description: '用户id',
+  })
+  userId?: string;
+
+  @ApiProperty({
+    description: '房源id',
+  })
+  @IsNotEmpty({
+    message: '房源id不能为空',
+  })
+  roomId: string;
+
+  @ApiProperty({
+    description: '预约时间',
+  })
+  @IsNotEmpty({
+    message: '预约时间不能为空',
+  })
+  dateTime: Date;
+
+  @ApiProperty({
+    description: '备注',
+  })
+  remarks?: string;
+}
+
+export class RoomRepairAskInfo {
+  // roomContractId
+  askImage: string;
+  remarks: string;
+}

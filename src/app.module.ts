@@ -11,27 +11,36 @@ import { CommonService } from './api/v1/common/common.service';
 import { LandLordsModule } from './api/v1/land-lords/land-lords.module';
 import { CustomerModule } from './api/v1/customer/customer.module';
 import { SystemModule } from './api/v1/system/system.module';
-import { RoomDevicesModule } from './api/v1/admin/room-devices/room-devices.module';
+import { RoomDevicesModule as AdminRoomDevicesModule } from './api/v1/admin/room-devices/room-devices.module';
 import { ManagersModule } from './api/v1/admin/managers/managers.module';
 import { HouseRoomsModule as AdminHouseRoomsModule } from './api/v1/admin/house-rooms/house-rooms.module';
 import { LandLordsModule as AdminLandLordsModule } from './api/v1/admin/land-lords/land-lords.module';
-import { CustomersModule } from './api/v1/admin/customers/customers.module';
+import { CustomersModule as AdminCustomersModule } from './api/v1/admin/customers/customers.module';
 import { HouseRoomsModule } from './api/v1/house-rooms/house-rooms.module';
+import { ArticleCategoriesModule as AdminArticleCategoriesModule } from './api/v1/admin/article-categories/article-categories.module';
+import { ArticlesModule as AdminArticlesModule } from './api/v1/admin/articles/articles.module';
+import { NoticesModule as AdminNoticesModule } from './api/v1/admin/notices/notices.module';
 
 @Module({
   imports: [
     ChatMessageModule,
     AuthModule,
-    MembersModule,
-    LandLordsModule,
-    CustomerModule,
     SystemModule,
-    RoomDevicesModule,
-    ManagersModule,
+
+    LandLordsModule,
+
+    MembersModule,
+    CustomerModule,
+
     HouseRoomsModule,
-    CustomersModule,
+    AdminRoomDevicesModule,
+    AdminCustomersModule,
+    ManagersModule,
     AdminLandLordsModule,
     AdminHouseRoomsModule,
+    AdminArticleCategoriesModule,
+    AdminArticlesModule,
+    AdminNoticesModule,
   ],
   controllers: [AppController, CommonController],
   providers: [AppService, PrismaService, CommonService],
