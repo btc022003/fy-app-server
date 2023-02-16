@@ -29,13 +29,59 @@ export class LandLordsController {
   findAll() {
     return this.landLordsService.findAll();
   }
-
+  @ApiOperation({
+    summary: '审核资质',
+  })
   @Patch('/chk/:id')
   update(
     @Param('id') id: string,
     // @Body() updateLandLordDto: UpdateLandLordDto,
   ) {
     return this.landLordsService.chkLandLord(id);
+  }
+
+  @ApiOperation({
+    summary: '房源列表',
+  })
+  @Patch('/chk/:id')
+  loadRoomData(
+    @Param('id') id: string,
+    // @Body() updateLandLordDto: UpdateLandLordDto,
+  ) {
+    return this.landLordsService.roomInfo(id);
+  }
+
+  @ApiOperation({
+    summary: '签订的合同信息',
+  })
+  @Patch('/contracts/:id')
+  loadRoomContractData(
+    @Param('id') id: string,
+    // @Body() updateLandLordDto: UpdateLandLordDto,
+  ) {
+    return this.landLordsService.roomContract(id);
+  }
+
+  @ApiOperation({
+    summary: '报修的信息',
+  })
+  @Patch('/repairs/:id')
+  loadRoomRepairData(
+    @Param('id') id: string,
+    // @Body() updateLandLordDto: UpdateLandLordDto,
+  ) {
+    return this.landLordsService.repairs(id);
+  }
+
+  @ApiOperation({
+    summary: '报修的信息',
+  })
+  @Patch('/complains/:id')
+  loadComplainData(
+    @Param('id') id: string,
+    // @Body() updateLandLordDto: UpdateLandLordDto,
+  ) {
+    return this.landLordsService.complains(id);
   }
 
   // @Get(':id')

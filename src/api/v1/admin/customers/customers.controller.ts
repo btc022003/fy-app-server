@@ -30,6 +30,22 @@ export class CustomersController {
     return this.customersService.findAll();
   }
 
+  @ApiOperation({
+    summary: '客户预约看房记录',
+  })
+  @Get('/date_info/:id')
+  findUserDateInfo(@Param('id') id: string) {
+    return this.customersService.loadDateList(id);
+  }
+
+  @ApiOperation({
+    summary: '客户合同记录',
+  })
+  @Get('/contract_info/:id')
+  findUserContractInfo(@Param('id') id: string) {
+    return this.customersService.loadContractList(id);
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.customersService.findOne(+id);

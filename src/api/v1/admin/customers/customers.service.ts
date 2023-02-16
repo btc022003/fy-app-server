@@ -43,4 +43,50 @@ export class CustomersService {
   // remove(id: number) {
   //   return `This action removes a #${id} customer`;
   // }
+
+  /**
+   * 查看用户合同信息
+   * @param userId
+   * @returns
+   */
+  loadContractList(userId: string) {
+    return this.prisma.roomContract.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        room: {
+          include: {
+            house: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  /**
+   * 查看预约看房记录
+   * @param userId
+   * @returns
+   */
+  loadDateList(userId: string) {
+    return this.prisma.dateRoom.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        room: {
+          include: {
+            house: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }

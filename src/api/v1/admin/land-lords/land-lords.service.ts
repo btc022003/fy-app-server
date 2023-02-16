@@ -61,4 +61,118 @@ export class LandLordsService {
       },
     });
   }
+
+  roomInfo(id: string) {
+    return this.prisma.room.findMany({
+      where: {
+        house: {
+          landLordId: id,
+        },
+      },
+      include: {
+        house: true,
+        roomAndDevices: {
+          include: {
+            device: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  /**
+   * 合同信息
+   * @param id
+   * @returns
+   */
+  roomContract(id: string) {
+    return this.prisma.roomContract.findMany({
+      where: {
+        landLordId: id,
+      },
+      include: {
+        room: {
+          include: {
+            house: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  /**
+   * 报修
+   * @param id
+   * @returns
+   */
+  repairs(id: string) {
+    return this.prisma.roomRepair.findMany({
+      where: {
+        roomContract: {
+          landLordId: id,
+        },
+      },
+      include: {
+        roomContract: {
+          include: {
+            landLord: true,
+            room: {
+              include: {
+                house: true,
+                roomAndDevices: {
+                  include: {
+                    device: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  /**
+   * 投诉
+   * @param id
+   * @returns
+   */
+  complains(id: string) {
+    return this.prisma.complain.findMany({
+      where: {
+        contract: {
+          landLordId: id,
+        },
+      },
+      include: {
+        contract: {
+          include: {
+            room: {
+              include: {
+                house: true,
+                roomAndDevices: {
+                  include: {
+                    device: true,
+                  },
+                },
+              },
+            },
+            landLord: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }

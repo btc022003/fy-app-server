@@ -20,6 +20,8 @@ import { HouseRoomsModule } from './api/v1/house-rooms/house-rooms.module';
 import { ArticleCategoriesModule as AdminArticleCategoriesModule } from './api/v1/admin/article-categories/article-categories.module';
 import { ArticlesModule as AdminArticlesModule } from './api/v1/admin/articles/articles.module';
 import { NoticesModule as AdminNoticesModule } from './api/v1/admin/notices/notices.module';
+import { BannerCategoriesModule as AdminBannerCategoriesModule } from './api/v1/admin/banner-categories/banner-categories.module';
+import { BannersModule as AdminBannersModule } from './api/v1/admin/banners/banners.module';
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { NoticesModule as AdminNoticesModule } from './api/v1/admin/notices/noti
     AdminArticleCategoriesModule,
     AdminArticlesModule,
     AdminNoticesModule,
+    AdminBannerCategoriesModule,
+    AdminBannersModule,
   ],
   controllers: [AppController, CommonController],
   providers: [AppService, PrismaService, CommonService],

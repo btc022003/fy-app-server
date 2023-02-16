@@ -357,6 +357,36 @@ model Article {
   @@map("articles")
 }
 
+model BannerCategory {
+  id        String   @id @default(uuid())
+  name      String   @default("")
+  desc      String   @default("") @db.Text
+  image     String   @default("")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  banners   Banner[]
+
+  @@map("banner_categories")
+}
+
+// 文章资讯数据
+model Banner {
+  id               String          @id @default(uuid())
+  name             String          @default("")
+  desc             String          @default("") @db.Text
+  tags             String          @default("") // 主治的症状标签，多个用,分割
+  image            String          @default("")
+  content          String          @default("") @db.Text
+  link             String          @default("") // 外部链接
+  views            Decimal         @default(20) // 浏览次数
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+  category         BannerCategory? @relation(fields: [bannerCategoryId], references: [id])
+  bannerCategoryId String?         @map("banner_category_id")
+
+  @@map("banners")
+}
+
 // 系统日志
 model SystemLog {
   id      String @id @default(uuid())
