@@ -46,6 +46,14 @@ export class CustomersController {
     return this.customersService.loadContractList(id);
   }
 
+  @ApiOperation({
+    summary: '用户收藏记录',
+  })
+  @Get('/collections/:id')
+  findUserCollections(@Param('id') id: string) {
+    return this.customersService.loadCollections(id);
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.customersService.findOne(+id);

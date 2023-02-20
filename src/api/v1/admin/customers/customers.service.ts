@@ -89,4 +89,30 @@ export class CustomersService {
       },
     });
   }
+
+  /**
+   * 获取用户的收藏
+   * @param userId
+   * @returns
+   */
+  loadCollections(userId: string) {
+    return this.prisma.roomCollection.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        user: true,
+        room: {
+          include: {
+            house: {
+              include: { landLord: true },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }

@@ -50,6 +50,27 @@ export const validateToken = (token, cb) => {
 };
 
 /**
+ * 获取token传递的用户id
+ * @param req
+ * @param cb
+ */
+export function loadUserId(req: any) {
+  const token = req.cookies?.token || req.headers.token;
+  let userId = '';
+  if (token) {
+    try {
+      const decoded = JWT.verify(token, salt);
+      userId = decoded.id;
+    } catch (err) {
+      // err
+    }
+    return userId;
+  } else {
+    return '';
+  }
+}
+
+/**
  * 生成验证码
  * @returns
  */

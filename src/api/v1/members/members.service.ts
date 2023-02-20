@@ -259,4 +259,35 @@ export class MembersService {
       });
     }
   }
+
+  /**
+   * 取消或者加入收藏
+   * @param userId
+   * @param roomId
+   * @param remarks
+   */
+  async toggleFav(userId: string, roomId: string, remarks = '') {
+    const collection = await this.prisma.roomCollection.findFirst({
+      where: {
+        roomId,
+        userId,
+      },
+    });
+    // console.log(collection);
+    if (collection) {
+      await this.prisma.roomCollection.delete({
+        where: {
+          id: (await collection).id,
+        },
+      });
+    } else {
+      await this.prisma.roomCollection.create({
+        data: {
+          userId,
+          roomId,
+          remarks,
+        },
+      });
+    }
+  }
 }

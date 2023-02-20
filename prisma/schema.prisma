@@ -28,13 +28,14 @@ model User {
   avatar        String  @default("")
   nickName      String  @default("") @map("nick_name")
 
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
-  roomContracts RoomContract[]
-  roomRepairs   RoomRepair[]
-  complains     Complain[]
-  messages      message[]
-  DateRoom      DateRoom[]
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  roomContracts   RoomContract[]
+  roomRepairs     RoomRepair[]
+  complains       Complain[]
+  messages        message[]
+  DateRoom        DateRoom[]
+  roomCollections RoomCollection[]
 
   @@map("users")
 }
@@ -120,6 +121,7 @@ model Room {
   roomWaterLogs       RoomWaterLog[]
   roomRepairs         RoomRepair[]
   dateRooms           DateRoom[]
+  roomCollections     RoomCollection[]
 
   @@map("rooms")
 }
@@ -457,4 +459,18 @@ model PermissionsOnRoles {
   updatedAt    DateTime    @updatedAt @map("updated_at")
 
   @@map("permissions_on_roles")
+}
+
+model RoomCollection {
+  id String @id @default(uuid())
+
+  remarks   String?  @default("")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?  @map("user_id")
+  room      Room?    @relation(fields: [roomId], references: [id])
+  roomId    String?  @map("room_id")
+
+  @@map("room_collections")
 }

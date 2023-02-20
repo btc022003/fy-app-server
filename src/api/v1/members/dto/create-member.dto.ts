@@ -108,8 +108,36 @@ export class DateHouseRoom {
   remarks?: string;
 }
 
+/**
+ * 报修
+ */
 export class RoomRepairAskInfo {
   // roomContractId
+  @ApiProperty({
+    description: '报修图片信息',
+  })
   askImage: string;
+  @ApiProperty({
+    description: '备注',
+  })
+  remarks: string;
+}
+
+/**
+ * 收藏
+ */
+export class RoomCollection {
+  // roomContractId
+  @ApiProperty({
+    description: '房间id',
+  })
+  @IsNotEmpty({
+    message: '房间id不能为空',
+  })
+  roomId: string;
+  @ApiProperty({
+    description: '备注',
+    required: false,
+  })
   remarks: string;
 }

@@ -4,6 +4,7 @@ import {
   CheckContract,
   DateHouseRoom,
   ResetPassword,
+  RoomCollection,
   RoomRepairAskInfo,
   SetPassword,
   UpdateMemberIdNum,
@@ -97,6 +98,18 @@ export class MembersController {
       req.user.id,
       askInfo.askImage,
       askInfo.remarks,
+    );
+  }
+
+  @ApiOperation({
+    summary: '收藏房源',
+  })
+  @Post('/toggle_collection')
+  toggleCollection(@Req() req, @Body() collection: RoomCollection) {
+    return this.membersService.toggleFav(
+      req.user.id,
+      collection.roomId,
+      collection.remarks,
     );
   }
 }
