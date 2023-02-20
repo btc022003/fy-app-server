@@ -29,6 +29,7 @@ export class LandLordsController {
   findAll() {
     return this.landLordsService.findAll();
   }
+
   @ApiOperation({
     summary: '审核资质',
   })
@@ -41,9 +42,9 @@ export class LandLordsController {
   }
 
   @ApiOperation({
-    summary: '房源列表',
+    summary: '房间列表数据',
   })
-  @Patch('/chk/:id')
+  @Get('/room/:id')
   loadRoomData(
     @Param('id') id: string,
     // @Body() updateLandLordDto: UpdateLandLordDto,
@@ -54,7 +55,7 @@ export class LandLordsController {
   @ApiOperation({
     summary: '签订的合同信息',
   })
-  @Patch('/contracts/:id')
+  @Get('/contracts/:id')
   loadRoomContractData(
     @Param('id') id: string,
     // @Body() updateLandLordDto: UpdateLandLordDto,
@@ -65,7 +66,7 @@ export class LandLordsController {
   @ApiOperation({
     summary: '报修的信息',
   })
-  @Patch('/repairs/:id')
+  @Get('/repairs/:id')
   loadRoomRepairData(
     @Param('id') id: string,
     // @Body() updateLandLordDto: UpdateLandLordDto,
@@ -74,9 +75,9 @@ export class LandLordsController {
   }
 
   @ApiOperation({
-    summary: '报修的信息',
+    summary: '投诉的信息',
   })
-  @Patch('/complains/:id')
+  @Get('/complains/:id')
   loadComplainData(
     @Param('id') id: string,
     // @Body() updateLandLordDto: UpdateLandLordDto,
