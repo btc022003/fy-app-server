@@ -27,6 +27,7 @@ export class LandLordsService {
         address: houseDto.address,
         isWhole: houseDto.isWhole,
         landLordId,
+        images: houseDto.images,
       },
     });
     return '创建房源成功';

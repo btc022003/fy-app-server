@@ -87,6 +87,7 @@ model House {
   dwelling  String  @default("") // 小区名字
   address   String  @default("") // 详细地址
   offline   Boolean @default(false) // 是否下线
+  images    String  @default("") // 照片
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

@@ -50,6 +50,15 @@ export class CreateHouseDto {
     message: '租住方式不能为空',
   })
   isWhole: boolean;
+
+  @ApiProperty({
+    description: '房屋照片,多个可以使用,分割',
+    default: '',
+  })
+  @IsNotEmpty({
+    message: '房屋照片不能为空,多个可以使用,分割',
+  })
+  images: string;
 }
 
 export class CreateHouseRoomDto {
