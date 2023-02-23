@@ -36,7 +36,7 @@ export class CreateBannerDto {
   @ApiProperty({
     description: '分类id',
   })
-  articleCategoryId: string;
+  bannerCategoryId: string;
 }
 
 export class QueryInfo {
