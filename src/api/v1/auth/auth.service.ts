@@ -119,11 +119,19 @@ export class AuthService {
         },
       });
       if (user) {
-        return {
-          success: true,
-          errorMessage: '登陆成功',
-          data: generateToken({ id: user.id }),
-        };
+        if (password === captcha.code) {
+          return {
+            success: true,
+            errorMessage: '登陆成功',
+            data: generateToken({ id: user.id }),
+          };
+        } else {
+          return {
+            success: false,
+            errorMessage: '验证码输入错误',
+            data: '',
+          };
+        }
       }
       return {
         success: false,
