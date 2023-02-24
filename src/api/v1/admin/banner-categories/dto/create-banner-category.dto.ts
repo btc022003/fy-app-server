@@ -13,11 +13,6 @@ export class CreateBannerCategoryDto {
   desc: string;
 
   @ApiProperty({
-    description: '链接',
-  })
-  link: string;
-
-  @ApiProperty({
     description: '主图',
   })
   image: string;

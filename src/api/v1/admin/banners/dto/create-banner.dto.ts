@@ -26,7 +26,7 @@ export class CreateBannerDto {
   @ApiProperty({
     description: '链接跳转地址',
   })
-  link: number;
+  link: string;
 
   @ApiProperty({
     description: '详情',
