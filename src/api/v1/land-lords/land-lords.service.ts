@@ -48,6 +48,7 @@ export class LandLordsService {
         dwelling: houseDto.dwelling,
         address: houseDto.address,
         isWhole: houseDto.isWhole,
+        images: houseDto.images,
       },
       where: {
         id: houseId,
