@@ -136,6 +136,7 @@ export class MembersService {
       for (let i = 0; i < months; i++) {
         orders.push({
           price: contract.price,
+          roomContractId: contract.id,
           lastPayDate: dayjs(contract.startTime)
             .add(i + 1, 'month')
             .toDate(),

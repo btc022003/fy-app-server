@@ -93,4 +93,4 @@ export const validateCaptchaIsOutDated = (createdAt: Date) => {
  * 两周前
  * @returns
  */
-export const beforeTwoWeeks = () => dayjs().add(-2, 'w');
+export const beforeTwoWeeks = () => dayjs().add(5, 'w');

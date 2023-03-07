@@ -229,7 +229,7 @@ model RoomContractOrder {
   id          String    @id @default(uuid())
   price       Float
   isPayed     Boolean   @default(false) @map("is_payed")
-  payCatefory Int       @default(1) @map("pay_category") // 1. 支付宝 2. 微信 3. 银行卡 4. 现金
+  payCategory Int       @default(1) @map("pay_category") // 1. 支付宝 2. 微信 3. 银行卡 4. 现金
   payDate     DateTime? @map("pay_date") // 实际支付时间
   lastPayDate DateTime? @map("last_pay_date") // 最后支付时间 需要根据合同自动生成
   remarks     String    @default("")

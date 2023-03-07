@@ -165,6 +165,11 @@ export class LandLordsService {
                 device: true,
               },
             },
+            roomContracts: {
+              orderBy: {
+                createdAt: 'desc',
+              },
+            },
           },
         },
       },
@@ -505,6 +510,75 @@ export class LandLordsService {
         errorMessage: '用户手机号码不存在，请先注册',
       };
     }
+  }
+
+  /**
+   * 获取合同信息
+   * @param id
+   * @returns
+   */
+  loadContractInfo(id: string) {
+    return this.prisma.roomContract.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        room: {
+          include: {
+            house: {
+              include: {
+                landLord: true,
+              },
+            },
+          },
+        },
+        user: true,
+      },
+    });
+  }
+
+  /**
+   * 终止合同
+   * @param id      合同id
+   * @param llId    房东id
+   * @returns
+   */
+  async cancelContract(id: string, llId: string) {
+    const contract = await this.prisma.roomContract.findFirst({
+      where: {
+        landLordId: llId,
+        id,
+      },
+    });
+    if (contract) {
+      if (contract.isChecked) {
+        return {
+          success: false,
+          errorMessage: '执行中的合同无法终止',
+        };
+      } else {
+        await this.prisma.roomContract.delete({
+          where: {
+            id,
+          },
+        });
+        await this.prisma.room.update({
+          where: {
+            id: contract.roomId,
+          },
+          data: {
+            isFull: false,
+          },
+        });
+        return '合同终止成功';
+      }
+    } else {
+      return {
+        success: false,
+        errorMessage: '合同信息不存在',
+      };
+    }
+    // return null;
   }
 
   /**

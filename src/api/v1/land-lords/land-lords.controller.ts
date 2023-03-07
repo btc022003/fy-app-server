@@ -167,6 +167,22 @@ export class LandLordsController {
   }
 
   @ApiOperation({
+    summary: '查看合同详情',
+  })
+  @Get('contract/:id')
+  loadContractInfo(@Param('id') id: string) {
+    return this.landLordsService.loadContractInfo(id);
+  }
+
+  @ApiOperation({
+    summary: '终止合同',
+  })
+  @Delete('contract/:id')
+  cancelContract(@Param('id') id: string, @Req() req) {
+    return this.landLordsService.cancelContract(id, req.user.id);
+  }
+
+  @ApiOperation({
     summary: '用户信息',
   })
   @Get('/info')
