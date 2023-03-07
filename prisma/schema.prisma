@@ -304,7 +304,8 @@ model message {
   user     User?     @relation(fields: [userId], references: [id])
   landLord LandLord? @relation(fields: [landLordId], references: [id])
 
-  isFromUser Boolean @default(true) // 是否用户发的消息
+  isFromUser Boolean @default(true) @map("is_from_user") // 是否用户发的消息
+  isRead     Boolean @default(false) @map("is_read") // 是否已读
   content    String
 
   createdAt  DateTime @default(now()) @map("created_at")

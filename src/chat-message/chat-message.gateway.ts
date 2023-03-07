@@ -41,9 +41,9 @@ export class ChatMessageGateway
     const { type, id } = socket.handshake.query;
     const where: any = {};
     if (type === 'user') {
-      where.landLordId = id;
-    } else {
       where.userId = id;
+    } else {
+      where.landLordId = id;
     }
 
     const messages = await this.prisma.message.findMany({

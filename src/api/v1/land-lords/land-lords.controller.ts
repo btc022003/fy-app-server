@@ -189,4 +189,28 @@ export class LandLordsController {
   loadLLInfo(@Req() req) {
     return this.landLordsService.loadLandLordInfo(req.user.id);
   }
+
+  @ApiOperation({
+    summary: '消息',
+  })
+  @Get('/messages')
+  loadHasMessageUser(@Req() req) {
+    return this.landLordsService.loadHasMessageUsers(req.user.id);
+  }
+
+  @ApiOperation({
+    summary: '消息',
+  })
+  @Get('/messages/:id')
+  loadMessageWithUser(@Param('id') id: string, @Req() req) {
+    return this.landLordsService.loadMessageList(req.user.id, id);
+  }
+
+  @ApiOperation({
+    summary: '报修信息',
+  })
+  @Get('/repairs')
+  loadRepairsInfo(@Req() req) {
+    return this.landLordsService.loadRepairs(req.user.id);
+  }
 }

@@ -593,4 +593,73 @@ export class LandLordsService {
       },
     });
   }
+
+  /**
+   * 获取有聊天记录的用户
+   * @param id
+   * @returns
+   */
+  loadHasMessageUsers(id: string) {
+    return this.prisma.message.findMany({
+      where: {
+        landLordId: id,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        user: true,
+      },
+      distinct: 'userId',
+    });
+  }
+
+  /**
+   * 获取当前80条聊天记录
+   * @param llId
+   * @param userId
+   * @returns
+   */
+  loadMessageList(llId: string, userId: string) {
+    return this.prisma.message.findMany({
+      where: {
+        landLordId: llId,
+        userId,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+      take: 80,
+    });
+  }
+
+  /**
+   * 获取报修信息
+   * @param llId
+   * @returns
+   */
+  loadRepairs(llId: string) {
+    return this.prisma.roomRepair.findMany({
+      where: {
+        roomContract: {
+          landLordId: llId,
+        },
+      },
+      include: {
+        roomContract: {
+          include: {
+            room: {
+              include: {
+                house: true,
+              },
+            },
+            user: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }
