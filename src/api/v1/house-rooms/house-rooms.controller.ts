@@ -37,7 +37,7 @@ export class HouseRoomsController {
     return this.houseRoomsService.findAll(
       {},
       query.page,
-      query.page,
+      query.per,
       loadUserId(req),
     );
   }

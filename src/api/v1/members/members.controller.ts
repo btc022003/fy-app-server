@@ -10,7 +10,7 @@ import {
   UpdateMemberIdNum,
 } from './dto/create-member.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Get, Post } from '@nestjs/common/decorators';
+import { Get, Param, Post } from '@nestjs/common/decorators';
 
 @ApiTags('客户端-会员中心')
 @Controller('/api/v1/members')
@@ -50,14 +50,30 @@ export class MembersController {
   }
 
   @ApiOperation({
+    summary: '查看合同',
+  })
+  @Get('/view_contract')
+  viewContract(@Req() req) {
+    return this.membersService.loadUserContract(req.user.id);
+  }
+
+  @ApiOperation({
     summary: '确认合同',
   })
-  @Post('check_contract')
+  @Post('/check_contract')
   checkContract(@Req() req, @Body() contractInfo: CheckContract) {
     return this.membersService.checkContract(
       req.user.id,
       contractInfo.contractId,
     );
+  }
+
+  @ApiOperation({
+    summary: '获取合同账单',
+  })
+  @Get('/contract_orders/:id')
+  contractOrders(@Req() req, @Param('id') id: string) {
+    return this.membersService.loadOrders(id);
   }
 
   @ApiOperation({
@@ -111,5 +127,22 @@ export class MembersController {
       collection.roomId,
       collection.remarks,
     );
+  }
+
+  @ApiOperation({
+    summary: '有聊天记录的用户信息',
+  })
+  @Get('/messages')
+  loadHasMessageUser(@Req() req) {
+    return this.membersService.loadHasMessageUsers(req.user.id);
+  }
+
+  @ApiOperation({
+    summary: '和指定人的聊天消息',
+  })
+  @Get('/messages/:id')
+  async loadMessageWithUser(@Param('id') id: string, @Req() req) {
+    const list = await this.membersService.loadMessageList(req.user.id, id);
+    return list.reverse();
   }
 }

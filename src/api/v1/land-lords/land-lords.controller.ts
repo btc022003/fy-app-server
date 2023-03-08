@@ -191,7 +191,7 @@ export class LandLordsController {
   }
 
   @ApiOperation({
-    summary: '消息',
+    summary: '有聊天记录的用户信息',
   })
   @Get('/messages')
   loadHasMessageUser(@Req() req) {
@@ -199,11 +199,12 @@ export class LandLordsController {
   }
 
   @ApiOperation({
-    summary: '消息',
+    summary: '和指定人的聊天消息',
   })
   @Get('/messages/:id')
-  loadMessageWithUser(@Param('id') id: string, @Req() req) {
-    return this.landLordsService.loadMessageList(req.user.id, id);
+  async loadMessageWithUser(@Param('id') id: string, @Req() req) {
+    const list = await this.landLordsService.loadMessageList(req.user.id, id);
+    return list.reverse();
   }
 
   @ApiOperation({

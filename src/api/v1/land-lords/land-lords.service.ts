@@ -620,17 +620,18 @@ export class LandLordsService {
    * @param userId
    * @returns
    */
-  loadMessageList(llId: string, userId: string) {
-    return this.prisma.message.findMany({
+  async loadMessageList(llId: string, userId: string) {
+    const data = await this.prisma.message.findMany({
       where: {
         landLordId: llId,
         userId,
       },
       orderBy: {
-        createdAt: 'asc',
+        createdAt: 'desc',
       },
       take: 80,
     });
+    return data;
   }
 
   /**

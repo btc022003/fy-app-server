@@ -101,6 +101,49 @@ export class MembersService {
     return '实名信息修改成功';
   }
 
+  /**
+   * 获取当前用户的合同信息
+   * @param userId
+   * @returns
+   */
+  async loadUserContract(userId: string) {
+    const contract = await this.prisma.roomContract.findFirst({
+      where: {
+        userId,
+      },
+      include: {
+        room: {
+          include: {
+            house: true,
+            roomAndDevices: {
+              include: {
+                device: true,
+              },
+            },
+          },
+        },
+        landLord: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    if (contract) {
+      return contract;
+    } else {
+      return {
+        success: false,
+        errorMessage: '暂无合同',
+      };
+    }
+  }
+
+  /**
+   * 确认合同
+   * @param userId
+   * @param contractId
+   * @returns
+   */
   async checkContract(userId: string, contractId) {
     const contract = await this.prisma.roomContract.findFirst({
       where: {
@@ -156,6 +199,37 @@ export class MembersService {
         errorMessage: '合同信息不存在',
       };
     }
+  }
+
+  /**
+   * 加载当前用户的合同支付信息
+   * @param id
+   * @returns
+   */
+  loadOrders(id: string) {
+    return this.prisma.roomContractOrder.findMany({
+      where: {
+        roomContractId: id,
+      },
+      // include: {
+      //   roomContract: {
+      //     include: {
+      //       user: true,
+      //       landLord: true,
+      //       room: {
+      //         include: {
+      //           house: true,
+      //           roomAndDevices: {
+      //             include: {
+      //               device: true,
+      //             },
+      //           },
+      //         },
+      //       },
+      //     },
+      //   },
+      // },
+    });
   }
 
   /**
@@ -290,5 +364,44 @@ export class MembersService {
         },
       });
     }
+  }
+
+  /**
+   * 获取有聊天记录的用户
+   * @param id
+   * @returns
+   */
+  loadHasMessageUsers(id: string) {
+    return this.prisma.message.findMany({
+      where: {
+        userId: id,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        landLord: true,
+      },
+      distinct: 'landLordId',
+    });
+  }
+
+  /**
+   * 获取当前80条聊天记录
+   * @param llId
+   * @param userId
+   * @returns
+   */
+  loadMessageList(llId: string, userId: string) {
+    return this.prisma.message.findMany({
+      where: {
+        landLordId: llId,
+        userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 80,
+    });
   }
 }

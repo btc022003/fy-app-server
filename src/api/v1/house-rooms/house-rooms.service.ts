@@ -28,6 +28,7 @@ export class HouseRoomsService {
         createdAt: 'desc',
       },
     });
+    console.log(list.length, per);
     const total = await this.prisma.room.count({ where });
     let collections: string[] = [];
     if (userId) {
