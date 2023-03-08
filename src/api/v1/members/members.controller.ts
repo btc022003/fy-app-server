@@ -142,7 +142,7 @@ export class MembersController {
   })
   @Get('/messages/:id')
   async loadMessageWithUser(@Param('id') id: string, @Req() req) {
-    const list = await this.membersService.loadMessageList(req.user.id, id);
+    const list = await this.membersService.loadMessageList(id, req.user.id);
     return list.reverse();
   }
 }

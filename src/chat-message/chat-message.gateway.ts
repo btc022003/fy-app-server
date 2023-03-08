@@ -69,6 +69,7 @@ export class ChatMessageGateway
   // 客户端通过receive监听新消息
   @SubscribeMessage('send')
   async create(@MessageBody() createChatMessageDto: CreateChatMessageDto) {
+    // console.log(createChatMessageDto);
     const data = await this.prisma.message.create({
       data: createChatMessageDto,
     });
@@ -87,8 +88,18 @@ export class ChatMessageGateway
       }
     });
     const client = clients.find((item) => item.id == toSocketId); // 接收消息的客户端信息
-    client?.emit('receive', data); // 发送消息到接收者
+    // 发送全部聊天记录到客户端，后期可以优化
+    const msgs = await this.prisma.message.findMany({
+      where: {
+        userId: data.userId,
+        landLordId: data.landLordId,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+    client?.emit('receive', msgs); // 发送消息到接收者
 
-    return { code: 1, data: data };
+    return { code: 1, data: msgs };
   }
 }
