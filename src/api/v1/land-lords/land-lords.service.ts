@@ -246,6 +246,7 @@ export class LandLordsService {
     const needCheckedContract = await this.prisma.roomContract.findMany({
       where: {
         isChecked: false,
+        landLordId: landLordId,
       },
       include: {
         user: true,
@@ -260,11 +261,23 @@ export class LandLordsService {
         createdAt: 'desc',
       },
     });
+    const contracts = await this.prisma.roomContract.findMany({
+      where: {
+        landLordId,
+      },
+      select: {
+        id: true,
+      },
+    });
+    // console.log(contracts.map((item) => item.id));
     // 待收租金
     const needPayedContract = await this.prisma.roomContractOrder.findMany({
       where: {
         lastPayDate: {
           lte: beforeTwoWeeks().toDate(),
+        },
+        roomContractId: {
+          in: contracts.map((item) => item.id),
         },
         isPayed: false,
       },
