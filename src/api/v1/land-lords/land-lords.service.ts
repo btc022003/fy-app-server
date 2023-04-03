@@ -451,7 +451,12 @@ export class LandLordsService {
    * @param userId
    * @param idNum
    */
-  async landLordSetIdNum(userId: string, idNum: string, realName: string) {
+  async landLordSetIdNum(
+    userId: string,
+    idNum: string,
+    realName: string,
+    avatar: string,
+  ) {
     await this.prisma.landLord.update({
       where: {
         id: userId,
@@ -459,6 +464,7 @@ export class LandLordsService {
       data: {
         idNum,
         realName,
+        avatar,
       },
     });
     return '实名信息修改成功';

@@ -19,6 +19,11 @@ export class UpdateMemberIdNum {
     message: '真实姓名不能为空',
   })
   realName: string;
+
+  @ApiProperty({
+    description: '头像',
+  })
+  avatar: string;
 }
 
 // 重置密码

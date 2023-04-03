@@ -153,6 +153,7 @@ export class LandLordsController {
       req.user.id,
       idNum.idNum,
       idNum.realName,
+      idNum.avatar,
     );
   }
 
