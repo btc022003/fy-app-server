@@ -46,6 +46,7 @@ export class MembersController {
       req.user.id,
       idNum.idNum,
       idNum.realName,
+      idNum.avatar,
     );
   }
 
@@ -91,6 +92,14 @@ export class MembersController {
   dateHouseRoom(@Req() req, @Body() dateHouseRoom: DateHouseRoom) {
     dateHouseRoom.userId = req.user.id;
     return this.membersService.dateHouseRoom(dateHouseRoom);
+  }
+
+  @ApiOperation({
+    summary: '获取用户的预约看房记录',
+  })
+  @Get('/date_rooms')
+  loadDateRooms(@Req() req) {
+    return this.membersService.loadDateHouseRooms(req.user.id);
   }
 
   @ApiOperation({

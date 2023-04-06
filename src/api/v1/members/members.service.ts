@@ -88,7 +88,12 @@ export class MembersService {
    * @param userId
    * @param idNum
    */
-  async setIdNum(userId: string, idNum: string, realName: string) {
+  async setIdNum(
+    userId: string,
+    idNum: string,
+    realName: string,
+    avatar: string,
+  ) {
     await this.prisma.user.update({
       where: {
         id: userId,
@@ -96,6 +101,7 @@ export class MembersService {
       data: {
         idNum,
         realName,
+        avatar,
       },
     });
     return '实名信息修改成功';
@@ -260,6 +266,33 @@ export class MembersService {
         userId: dateRoom.userId,
         dateTime: new Date(dateRoom.dateTime),
         remarks: dateRoom.remarks,
+      },
+    });
+  }
+
+  /**
+   * 获取指定用户的所有预约看房记录
+   * @param userId
+   * @returns
+   */
+  loadDateHouseRooms(userId: string) {
+    return this.prisma.dateRoom.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        room: {
+          include: {
+            house: {
+              include: {
+                landLord: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
   }
