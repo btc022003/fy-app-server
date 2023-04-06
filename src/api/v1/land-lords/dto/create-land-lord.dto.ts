@@ -181,3 +181,17 @@ export class createContract {
   })
   endTime: Date;
 }
+
+export class createRepairReply {
+  @ApiProperty({
+    description: '回复内容',
+    default: '',
+  })
+  replyContent?: string;
+
+  @ApiProperty({
+    description: '回复图片，多个用,分割',
+    default: '',
+  })
+  replyImage?: string;
+}

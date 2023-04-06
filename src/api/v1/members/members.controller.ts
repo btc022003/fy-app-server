@@ -110,7 +110,7 @@ export class MembersController {
   })
   @Post('/ask_complain')
   askComplain(@Req() req, @Body() askInfo: RoomRepairAskInfo) {
-    return this.membersService.repairsOrder(
+    return this.membersService.complain(
       req.user.id,
       askInfo.askImage,
       askInfo.remarks,

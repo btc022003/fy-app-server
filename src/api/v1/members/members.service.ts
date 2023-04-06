@@ -256,8 +256,8 @@ export class MembersService {
   dateHouseRoom(dateRoom: DateHouseRoom) {
     return this.prisma.dateRoom.create({
       data: {
-        roomId: dateRoom.userId,
-        userId: dateRoom.roomId,
+        roomId: dateRoom.roomId,
+        userId: dateRoom.userId,
         dateTime: new Date(dateRoom.dateTime),
         remarks: dateRoom.remarks,
       },
@@ -283,12 +283,8 @@ export class MembersService {
         createdAt: 'desc',
       },
     });
+    // console.log(contract);
     if (contract) {
-      return {
-        success: false,
-        errorMessage: '合同信息不存在',
-      };
-    } else {
       return this.prisma.roomRepair.create({
         //
         data: {
@@ -298,6 +294,11 @@ export class MembersService {
           roomContractId: contract.id,
         },
       });
+    } else {
+      return {
+        success: false,
+        errorMessage: '合同信息不存在',
+      };
     }
   }
 
@@ -318,11 +319,6 @@ export class MembersService {
       },
     });
     if (contract) {
-      return {
-        success: false,
-        errorMessage: '合同信息不存在',
-      };
-    } else {
       return this.prisma.complain.create({
         //
         data: {
@@ -332,6 +328,11 @@ export class MembersService {
           roomContractId: contract.id,
         },
       });
+    } else {
+      return {
+        success: false,
+        errorMessage: '合同信息不存在',
+      };
     }
   }
 

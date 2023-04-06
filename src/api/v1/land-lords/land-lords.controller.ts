@@ -15,6 +15,7 @@ import {
   createContract,
   CreateHouseDto,
   CreateHouseRoomDto,
+  createRepairReply,
   HouseQuery,
 } from './dto/create-land-lord.dto';
 // import { UpdateLandLordDto } from './dto/update-land-lord.dto';
@@ -214,5 +215,33 @@ export class LandLordsController {
   @Get('/repairs')
   loadRepairsInfo(@Req() req) {
     return this.landLordsService.loadRepairs(req.user.id);
+  }
+
+  @ApiOperation({
+    summary: '预约看房信息',
+  })
+  @Get('/dates')
+  loadDatesInfo(@Req() req) {
+    return this.landLordsService.loadDates(req.user.id);
+  }
+
+  @Put('/replay_repairs/:id')
+  replayRepairs(
+    @Param('id') id: string,
+    @Body() createRepairReplyDto: createRepairReply,
+  ) {
+    return this.landLordsService.replayRepairs(
+      id,
+      createRepairReplyDto.replyContent,
+      createRepairReplyDto.replyImage,
+    );
+  }
+
+  @ApiOperation({
+    summary: '投诉信息',
+  })
+  @Get('/complains')
+  loadComplainInfo(@Req() req) {
+    return this.landLordsService.loadComplains(req.user.id);
   }
 }

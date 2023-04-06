@@ -682,4 +682,94 @@ export class LandLordsService {
       },
     });
   }
+
+  /**
+   * 回复报修信息
+   * @param id
+   * @param content
+   * @param images
+   * @returns
+   */
+  replayRepairs(id: string, content: string, images: string) {
+    return this.prisma.roomRepair.update({
+      where: {
+        id,
+      },
+      data: {
+        replyContent: content,
+        replyImage: images,
+        isReplyed: true,
+      },
+    });
+  }
+
+  /**
+   * 获取自己被预约的房源信息
+   * @param llId
+   * @returns
+   */
+  loadDates(llId: string) {
+    return this.prisma.dateRoom.findMany({
+      where: {
+        room: {
+          house: {
+            landLordId: llId,
+          },
+        },
+      },
+      include: {
+        user: true,
+        room: {
+          include: {
+            house: {
+              include: {
+                landLord: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  /**
+   * 获取投诉信息
+   * @param llId
+   * @returns
+   */
+  loadComplains(llId: string) {
+    return this.prisma.complain.findMany({
+      where: {
+        contract: {
+          room: {
+            house: {
+              landLordId: llId,
+            },
+          },
+        },
+      },
+      include: {
+        user: true,
+        contract: {
+          include: {
+            room: {
+              include: {
+                house: {
+                  include: {
+                    landLord: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }
