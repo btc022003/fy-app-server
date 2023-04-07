@@ -154,4 +154,12 @@ export class MembersController {
     const list = await this.membersService.loadMessageList(id, req.user.id);
     return list.reverse();
   }
+
+  @ApiOperation({
+    summary: '支付房租',
+  })
+  @Post('/pay_order_contract/:id')
+  async payContractOrder(@Param('id') id: string) {
+    return this.membersService.payContractOrder(id);
+  }
 }

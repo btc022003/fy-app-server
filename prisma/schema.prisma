@@ -51,14 +51,31 @@ model LandLord {
   idNum         String  @default("") @map("id_num") // 身份证号
   isRealChecked Boolean @default(false) @map("is_real_checked") // 是否实名认证
   isChecked     Boolean @default(false) @map("is_checked") // 是否审核通过,审核通过的才能进行房屋出租
+  balance       Float   @default(0)
 
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
   houses        House[]
   roomContracts RoomContract[]
   message       message[]
+  BalanceLog    BalanceLog[]
 
   @@map("land_lords")
+}
+
+model BalanceLog {
+  id String @id @default(uuid())
+
+  data     Float  @default(0)
+  remarks  String @default("")
+  category String @default("add")
+
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  landLord   LandLord? @relation(fields: [landLordId], references: [id])
+  landLordId String?
+
+  @@map("balance_logs")
 }
 
 // 验证码

@@ -438,4 +438,58 @@ export class MembersService {
       take: 80,
     });
   }
+
+  async payContractOrder(id: string) {
+    const co = await this.prisma.roomContractOrder.findFirst({
+      where: { id },
+      include: {
+        roomContract: true,
+      },
+    });
+    if (co) {
+      if (co.isPayed) {
+        return {
+          success: false,
+          errorMessage: '此次账单已支付',
+        };
+      } else {
+        // 设置订单为已支付
+        await this.prisma.roomContractOrder.update({
+          where: {
+            id,
+          },
+          data: {
+            isPayed: true,
+            payDate: new Date(),
+          },
+        });
+      }
+      // 添加资金往来记录
+      await this.prisma.balanceLog.create({
+        data: {
+          category: 'add',
+          data: co.price,
+          remarks: '用户交房租:' + co.id,
+          landLordId: co.roomContract.landLordId,
+        },
+      });
+      // 修改账户余额数据
+      await this.prisma.landLord.update({
+        where: {
+          id: co.roomContract.landLordId,
+        },
+        data: {
+          balance: {
+            increment: co.price,
+          },
+        },
+      });
+      return '支付成功';
+    } else {
+      return {
+        success: false,
+        errorMessage: '合同信息不存在',
+      };
+    }
+  }
 }
