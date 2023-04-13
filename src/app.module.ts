@@ -22,6 +22,7 @@ import { ArticlesModule as AdminArticlesModule } from './api/v1/admin/articles/a
 import { NoticesModule as AdminNoticesModule } from './api/v1/admin/notices/notices.module';
 import { BannerCategoriesModule as AdminBannerCategoriesModule } from './api/v1/admin/banner-categories/banner-categories.module';
 import { BannersModule as AdminBannersModule } from './api/v1/admin/banners/banners.module';
+import { AlipayController } from './pay/alipay/alipay.controller';
 
 @Module({
   imports: [
@@ -46,7 +47,7 @@ import { BannersModule as AdminBannersModule } from './api/v1/admin/banners/bann
     AdminBannerCategoriesModule,
     AdminBannersModule,
   ],
-  controllers: [AppController, CommonController],
+  controllers: [AppController, CommonController, AlipayController],
   providers: [AppService, PrismaService, CommonService],
 })
 export class AppModule {
