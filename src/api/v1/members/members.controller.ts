@@ -46,6 +46,7 @@ export class MembersController {
       req.user.id,
       idNum.idNum,
       idNum.realName,
+      idNum.avatar,
     );
   }
 
@@ -94,6 +95,14 @@ export class MembersController {
   }
 
   @ApiOperation({
+    summary: '获取用户的预约看房记录',
+  })
+  @Get('/date_rooms')
+  loadDateRooms(@Req() req) {
+    return this.membersService.loadDateHouseRooms(req.user.id);
+  }
+
+  @ApiOperation({
     summary: '报修',
   })
   @Post('/ask_repairs')
@@ -110,7 +119,7 @@ export class MembersController {
   })
   @Post('/ask_complain')
   askComplain(@Req() req, @Body() askInfo: RoomRepairAskInfo) {
-    return this.membersService.repairsOrder(
+    return this.membersService.complain(
       req.user.id,
       askInfo.askImage,
       askInfo.remarks,
@@ -144,5 +153,13 @@ export class MembersController {
   async loadMessageWithUser(@Param('id') id: string, @Req() req) {
     const list = await this.membersService.loadMessageList(id, req.user.id);
     return list.reverse();
+  }
+
+  @ApiOperation({
+    summary: '支付房租',
+  })
+  @Post('/pay_order_contract/:id')
+  async payContractOrder(@Param('id') id: string) {
+    return this.membersService.payContractOrder(id);
   }
 }

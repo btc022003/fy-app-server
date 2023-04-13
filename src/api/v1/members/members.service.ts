@@ -88,7 +88,12 @@ export class MembersService {
    * @param userId
    * @param idNum
    */
-  async setIdNum(userId: string, idNum: string, realName: string) {
+  async setIdNum(
+    userId: string,
+    idNum: string,
+    realName: string,
+    avatar: string,
+  ) {
     await this.prisma.user.update({
       where: {
         id: userId,
@@ -96,6 +101,7 @@ export class MembersService {
       data: {
         idNum,
         realName,
+        avatar,
       },
     });
     return '实名信息修改成功';
@@ -256,10 +262,37 @@ export class MembersService {
   dateHouseRoom(dateRoom: DateHouseRoom) {
     return this.prisma.dateRoom.create({
       data: {
-        roomId: dateRoom.userId,
-        userId: dateRoom.roomId,
+        roomId: dateRoom.roomId,
+        userId: dateRoom.userId,
         dateTime: new Date(dateRoom.dateTime),
         remarks: dateRoom.remarks,
+      },
+    });
+  }
+
+  /**
+   * 获取指定用户的所有预约看房记录
+   * @param userId
+   * @returns
+   */
+  loadDateHouseRooms(userId: string) {
+    return this.prisma.dateRoom.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        room: {
+          include: {
+            house: {
+              include: {
+                landLord: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
   }
@@ -283,12 +316,8 @@ export class MembersService {
         createdAt: 'desc',
       },
     });
+    // console.log(contract);
     if (contract) {
-      return {
-        success: false,
-        errorMessage: '合同信息不存在',
-      };
-    } else {
       return this.prisma.roomRepair.create({
         //
         data: {
@@ -298,6 +327,11 @@ export class MembersService {
           roomContractId: contract.id,
         },
       });
+    } else {
+      return {
+        success: false,
+        errorMessage: '合同信息不存在',
+      };
     }
   }
 
@@ -318,11 +352,6 @@ export class MembersService {
       },
     });
     if (contract) {
-      return {
-        success: false,
-        errorMessage: '合同信息不存在',
-      };
-    } else {
       return this.prisma.complain.create({
         //
         data: {
@@ -332,6 +361,11 @@ export class MembersService {
           roomContractId: contract.id,
         },
       });
+    } else {
+      return {
+        success: false,
+        errorMessage: '合同信息不存在',
+      };
     }
   }
 
@@ -403,5 +437,59 @@ export class MembersService {
       },
       take: 80,
     });
+  }
+
+  async payContractOrder(id: string) {
+    const co = await this.prisma.roomContractOrder.findFirst({
+      where: { id },
+      include: {
+        roomContract: true,
+      },
+    });
+    if (co) {
+      if (co.isPayed) {
+        return {
+          success: false,
+          errorMessage: '此次账单已支付',
+        };
+      } else {
+        // 设置订单为已支付
+        await this.prisma.roomContractOrder.update({
+          where: {
+            id,
+          },
+          data: {
+            isPayed: true,
+            payDate: new Date(),
+          },
+        });
+      }
+      // 添加资金往来记录
+      await this.prisma.balanceLog.create({
+        data: {
+          category: 'add',
+          data: co.price,
+          remarks: '用户交房租:' + co.id,
+          landLordId: co.roomContract.landLordId,
+        },
+      });
+      // 修改账户余额数据
+      await this.prisma.landLord.update({
+        where: {
+          id: co.roomContract.landLordId,
+        },
+        data: {
+          balance: {
+            increment: co.price,
+          },
+        },
+      });
+      return '支付成功';
+    } else {
+      return {
+        success: false,
+        errorMessage: '合同信息不存在',
+      };
+    }
   }
 }
